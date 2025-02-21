@@ -1,0 +1,189 @@
+#############################################################################
+## COMPANY NAME	: Engineers at Work
+## AUTHOR		: Alcides Silveira Costa
+## AUTHORS EMAIL: alcides@engineersatwork.com.br
+#############################################################################
+## RELEASE HISTORY
+## VERSION 		DATE 			AUTHOR			DESCRIPTION
+## 1.0.0 		02-Nov-2009		Alcides			Creation
+## ##########################################################################
+## PURPOSE		: Quartus II Settings
+## REFERENCES	: 
+## [1] Quartus II Settings File Manual, March 2009, v6.0
+## [2] Quartus II Handbook Version 9.0, March 2009
+
+###############################################################################
+# Global Settings
+
+# Design Settings
+set_global_assignment -name FAMILY "Cyclone III"
+set_global_assignment -name DEVICE EP3C16F484C6
+set_global_assignment -name ORIGINAL_QUARTUS_VERSION "9.0 SP2"
+set_global_assignment -name PROJECT_CREATION_TIME_DATE "22:50:14  OCTOBER 30, 2009"
+set_global_assignment -name LAST_QUARTUS_VERSION "9.0 SP2"
+set_global_assignment -name TOP_LEVEL_ENTITY "rsa"
+set_global_assignment -name VHDL_INPUT_VERSION VHDL93
+
+
+# EDA Netlister
+set_global_assignment -name EDA_SIMULATION_TOOL "ModelSim-Altera (VHDL)"
+set_global_assignment -name EDA_OUTPUT_DATA_FORMAT VHDL -section_id eda_simulation
+
+# RTL Files
+set_global_assignment -name VHDL_FILE vhdl/rsa.vhd
+set_global_assignment -name VHDL_FILE vhdl/rsa_core.vhd
+set_global_assignment -name VHDL_FILE vhdl/rsa_core_ctrl.vhd
+set_global_assignment -name VHDL_FILE vhdl/rsa_core_mod.vhd
+set_global_assignment -name VHDL_FILE vhdl/rsa_core_mult.vhd
+set_global_assignment -name VHDL_FILE vhdl/rsa_io.vhd
+set_global_assignment -name VHDL_FILE vhdl/rsa_io_ctrl.vhd
+set_global_assignment -name VHDL_FILE vhdl/rsa_io_dec.vhd
+
+# Testbench File
+set_global_assignment -name VHDL_TEST_BENCH_FILE vhdl/rsa_core_tb.vhd
+
+# Timing Constraint File
+set_global_assignment -name SDC_FILE sdc/rsa.sdc
+
+###############################################################################
+# Mapping Options
+
+# Specifies the processing style used to compile a state machine.
+# Options: Auto, Gray, Johnson, Minimal Bits, One-Hot, Sequential, User-Encoded
+set_global_assignment -name STATE_MACHINE_PROCESSING SEQUENTIAL
+
+# Specifies the overall optimization goal for Analysis & Synthesis: attempt
+# to maximize performance (speed), minimize logic usage (area), or balance high
+# performance with minimal logic usage (balanced).
+# Options: Speed, Area, Balanced 
+
+set_global_assignment -name CYCLONEII_OPTIMIZATION_TECHNIQUE AREA
+
+# Specifies whether Quartus II synthesis is allowed to use timing information
+# to optimize the design. When this option is turned on, synthesis will run
+# timing analysis to obtain timing information about the netlist, and will
+# optimize the netlist accordingly. It will also automatically apply the
+# "SDC Constraint Protection" logic option.
+# Options: On, Off
+set_global_assignment -name SYNTH_TIMING_DRIVEN_SYNTHESIS ON
+
+# Specifies the synthesis effort level. The default value is "Auto", which means
+# synthesis will go through all its steps. When "Fast" is selected, synthesis will
+# skip a number of steps which makes it approximately 30% faster.
+# This may be at the cost of performance and resources.
+# Options: Auto, Fast
+set_global_assignment -name SYNTHESIS_EFFORT AUTO
+
+###############################################################################
+# Fitter Options
+
+# Performs timing-based placement using the timing requirements you specify for
+# the design.
+# Options: Extra effort, Normal compilation, Off
+set_global_assignment -name OPTIMIZE_TIMING "EXTRA EFFORT"
+
+# optimizes the hold times within a device to meet timing requirements and
+# assignments you specify.
+# Options: All Paths, IO Paths and Minimum TPD Paths, Off
+
+# Optimize fast-corner timing instructs the Fitter, when optimizing your
+# design, to consider fast-corner delays, in addition to slow-corner delays,
+# from the fast-corner timing model (fastest manufactured device, operating in
+# low-temperature and high-voltage conditions). 
+# Options: On, Off
+set_global_assignment -name OPTIMIZE_MULTI_CORNER_TIMING ON
+
+# Specifies the processing time and effort the Fitter expends to fit your
+# design. Select Standard Fit for the Fitter to use the highest effort and
+# preserve the performance from previous compilations. Select Fast Fit for up
+# to 50% faster compilation times, although this may reduce design performance.
+# Options: Auto Fit, Fast Fit, Standard Fit
+set_global_assignment -name FITTER_EFFORT "STANDARD FIT"
+
+# Specifies the capacitive load, in picofarads (pF), on output pins for each
+# I/O standard.
+# Range: [0, 10000]
+set_instance_assignment -name OUTPUT_PIN_LOAD 10 -to rsa_err
+set_instance_assignment -name OUTPUT_PIN_LOAD 10 -to rsa_lcd[0]
+set_instance_assignment -name OUTPUT_PIN_LOAD 10 -to rsa_lcd[1]
+set_instance_assignment -name OUTPUT_PIN_LOAD 10 -to rsa_lcd[2]
+set_instance_assignment -name OUTPUT_PIN_LOAD 10 -to rsa_lcd[3]
+set_instance_assignment -name OUTPUT_PIN_LOAD 10 -to rsa_lcd[4]
+set_instance_assignment -name OUTPUT_PIN_LOAD 10 -to rsa_lcd[5]
+set_instance_assignment -name OUTPUT_PIN_LOAD 10 -to rsa_lcd[6]
+set_instance_assignment -name OUTPUT_PIN_LOAD 10 -to rsa_lcd[7]
+set_instance_assignment -name OUTPUT_PIN_LOAD 10 -to rsa_lcd[8]
+set_instance_assignment -name OUTPUT_PIN_LOAD 10 -to rsa_lcd[9]
+set_instance_assignment -name OUTPUT_PIN_LOAD 10 -to rsa_lcd[10]
+set_instance_assignment -name OUTPUT_PIN_LOAD 10 -to rsa_lcd[11]
+set_instance_assignment -name OUTPUT_PIN_LOAD 10 -to rsa_lcd[12]
+set_instance_assignment -name OUTPUT_PIN_LOAD 10 -to rsa_lcd[13]
+set_instance_assignment -name OUTPUT_PIN_LOAD 10 -to rsa_lcd[14]
+set_instance_assignment -name OUTPUT_PIN_LOAD 10 -to rsa_lcd[15]
+
+# Specifies how unused pins will be drived
+# Options: As input tri-stated, As input tri-stated with bus-hold,
+# As input tri-stated with weak pull-up, As output driving an unspecified signal
+# As output driving ground
+set_global_assignment -name RESERVE_ALL_UNUSED_PINS "AS INPUT TRI-STATED"
+set_global_assignment -name RESERVE_ALL_UNUSED_PINS_NO_OUTPUT_GND "AS INPUT TRI-STATED"
+
+# Assigns a location on the device for the current node(s) and/or pin(s).
+set_location_assignment PIN_H2 -to rsa_rst
+set_location_assignment PIN_G3 -to rsa_load
+set_location_assignment PIN_G21 -to rsa_clk
+
+# Toogle swicthes
+set_location_assignment PIN_J6 -to rsa_din[0]
+set_location_assignment PIN_H5 -to rsa_din[1]
+set_location_assignment PIN_H6 -to rsa_din[2]
+set_location_assignment PIN_G4 -to rsa_din[3]
+set_location_assignment PIN_G5 -to rsa_din[4]
+set_location_assignment PIN_J7 -to rsa_din[5]
+set_location_assignment PIN_H7 -to rsa_din[6]
+set_location_assignment PIN_E3 -to rsa_din[7]
+
+# Done & Error signal (red led)
+set_location_assignment PIN_J1 -to rsa_err
+
+# Binary output (green leds)
+set_location_assignment PIN_E11 -to rsa_lcd[0]
+set_location_assignment PIN_F11 -to rsa_lcd[1]
+set_location_assignment PIN_H12 -to rsa_lcd[2]
+set_location_assignment PIN_H13 -to rsa_lcd[3]
+set_location_assignment PIN_G12 -to rsa_lcd[4]
+set_location_assignment PIN_F12 -to rsa_lcd[5]
+set_location_assignment PIN_F13 -to rsa_lcd[6]
+set_location_assignment PIN_D13 -to rsa_lcd[7]
+set_location_assignment PIN_A13 -to rsa_lcd[8]
+set_location_assignment PIN_B13 -to rsa_lcd[9]
+set_location_assignment PIN_C13 -to rsa_lcd[10]
+set_location_assignment PIN_A14 -to rsa_lcd[11]
+set_location_assignment PIN_B14 -to rsa_lcd[12]
+set_location_assignment PIN_E14 -to rsa_lcd[13]
+set_location_assignment PIN_A15 -to rsa_lcd[14]
+set_location_assignment PIN_B15 -to rsa_lcd[15]
+
+###############################################################################
+# Timing Analysis Options
+# Generates corner netlist for timing analysis
+
+set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
+set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
+#set_global_assignment -name TIMEQUEST_MULTICORNER_ANALYSIS ON
+#set_global_assignment -name TIMEQUEST_DO_CCPP_REMOVAL OFF
+
+###############################################################################
+# Assembler Options
+# Generates corner netlist for timing analysis
+
+# Generates required file to program EPCS4 configuration device (.pof)
+set_global_assignment -name STRATIX_CONFIGURATION_DEVICE EPCS4
+set_global_assignment -name STRATIX_DEVICE_IO_STANDARD "3.3-V LVTTL"
+set_global_assignment -name RESERVE_ASDO_AFTER_CONFIGURATION "AS INPUT TRI-STATED"
+
+set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
+set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
+set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+set_global_assignment -name LL_ROOT_REGION ON -section_id "Root Region"
+set_global_assignment -name LL_MEMBER_STATE LOCKED -section_id "Root Region"
