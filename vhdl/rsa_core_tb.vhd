@@ -205,7 +205,7 @@ begin
         variable line_cnt_var   : integer := 0;
 
         variable msg0           : string(79 downto 1) := "-------------------------------------------------------------------------------";
-        variable msg1           : string(31 downto 1) := "COMPANY NAME: InPlace Design Automation";
+        variable msg1           : string(39 downto 1) := "COMPANY NAME: InPlace Design Automation";
         variable msg2           : string(30 downto 1) := "AUTHOR: Alcides Silveira Costa";
         variable msg3           : string(18 downto 1) := "Simulation Results";
         variable msg4           : string(34 downto 1) := "             Result       Expected";
