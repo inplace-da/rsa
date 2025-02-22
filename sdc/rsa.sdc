@@ -1,20 +1,19 @@
-REM ###########################################################################
-REM COMPANY NAME: InPlace Design Automation
-REM AUTHOR		: Alcides Silveira Costa
-REM ###########################################################################
-REM RELEASE HISTORY
-REM DATE 			AUTHOR			DESCRIPTION
-REM 24-Feb-2025		Alcides			Desing flow adaptation to Windows 7 on a VM
-REM									running on Ubuntu 22.04
-REM 02-Nov-2009		Alcides			Creation
-## ##########################################################################
-## PURPOSE		: Modelsim automation script for gate-level simulation (cell)
-## REFERENCES	: 
-## [1] Quartus II TimeQuest Timing Analyzer Cookbook, August 2008
-## [2] SDC and TimeQuest API Reference Manual, March 2009, v4.0
-## [3] TimeQuest Timing Analyzer: Native SDC Support for Timing Analysis of
-## FPGA-Based Designs, White Paper, May 2006, v1.0
-
+###########################################################################
+# COMPANY NAME	: InPlace Design Automation
+# AUTHOR		: Alcides Silveira Costa
+###########################################################################
+# RELEASE HISTORY
+# DATE 			AUTHOR			DESCRIPTION
+# 24-Feb-2025		Alcides			Desing flow adaptation to Windows 7 on a VM
+#									running on Ubuntu 22.04
+# 02-Nov-2009		Alcides			Creation
+# ##########################################################################
+# PURPOSE		: Modelsim automation script for gate-level simulation (cell)
+# REFERENCES	: 
+# [1] Quartus II TimeQuest Timing Analyzer Cookbook, August 2008
+# [2] SDC and TimeQuest API Reference Manual, March 2009, v4.0
+# [3] TimeQuest Timing Analyzer: Native SDC Support for Timing Analysis of
+# FPGA-Based Designs, White Paper, May 2006, v1.0
 
 ###############################################################################
 # Global Settings
