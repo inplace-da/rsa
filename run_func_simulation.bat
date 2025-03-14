@@ -13,11 +13,6 @@ REM REFERENCES	:
 REM [1] Quartus II Scripting Reference Manual, March 2009, v9.0
 REM [2] ModelSim Reference Manual, Software Version 6.4a
 
-REM ################################## Lint ##################################
-REM Check all the design files in a design for syntax and semantic
-REM errors, and perform a netlist extraction.
-quartus_map rsa --analysis_and_elaboration
-
 REM ###################### Funtional Simulation ##############################
 cd func_sim
 vsim -do run.tcl

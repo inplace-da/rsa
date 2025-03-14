@@ -60,37 +60,40 @@ module rsa_core_ctrl #(
         ctrl_err = err_ff;
     end
     
-    always @(*) begin
-        case (state_reg)
-            INIT: state_ns = LOAD_M;
-            LOAD_M: state_ns = (ctrl_load == LOAD) ? WAIT_M : LOAD_M;
-            WAIT_M: state_ns = (ctrl_load == LOAD) ? WAIT_M : LOAD_E;
-            LOAD_E: state_ns = (ctrl_load == LOAD) ? WAIT_E : LOAD_E;
-            WAIT_E: state_ns = (ctrl_load == LOAD) ? WAIT_E : LOAD_N;
-            LOAD_N: state_ns = (ctrl_load == LOAD) ? WAIT_N : LOAD_N;
-            WAIT_N: begin
-                if (ctrl_load == LOAD)
-                    state_ns = WAIT_N;
-                else if (n_reg == 0)
-                    state_ns = ERROR;
-                else if (e_reg == 0)
-                    state_ns = CASE0;
-                else if (e_reg == 1)
-                    state_ns = CASE1;
-                else
-                    state_ns = CASE2;
-            end
-            ERROR: state_ns = LOAD_M;
-            CASE0: state_ns = DONE;
-            CASE1: state_ns = DONE;
-            CASE2: state_ns = START;
-            START: state_ns = (e_reg == 0) ? DONE : START;
-            DONE: state_ns = LOAD_M;
-            default: state_ns = INIT;
-        endcase
+    always @(ctrl_rst, ctrl_load, n_reg, e_reg, ctrl_loadx, state_reg) begin
+    	if (ctrl_rst == RESET)
+			state_ns = INIT;
+    	else
+        	case (state_reg)
+        	    INIT: state_ns = LOAD_M;
+        	    LOAD_M: state_ns = (ctrl_load == LOAD) ? WAIT_M : LOAD_M;
+        	    WAIT_M: state_ns = (ctrl_load == LOAD) ? WAIT_M : LOAD_E;
+        	    LOAD_E: state_ns = (ctrl_load == LOAD) ? WAIT_E : LOAD_E;
+        	    WAIT_E: state_ns = (ctrl_load == LOAD) ? WAIT_E : LOAD_N;
+        	    LOAD_N: state_ns = (ctrl_load == LOAD) ? WAIT_N : LOAD_N;
+        	    WAIT_N: begin
+        	        if (ctrl_load == LOAD)
+        	            state_ns = WAIT_N;
+        	        else if (n_reg == 0)
+        	            state_ns = ERROR;
+        	        else if (e_reg == 0)
+        	            state_ns = CASE0;
+        	        else if (e_reg == 1)
+        	            state_ns = CASE1;
+        	        else
+        	            state_ns = CASE2;
+        	    end
+        	    ERROR: state_ns = LOAD_M;
+        	    CASE0: state_ns = DONE;
+        	    CASE1: state_ns = DONE;
+        	    CASE2: state_ns = START;
+        	    START: state_ns = (e_reg == 0) ? DONE : START;
+        	    DONE: state_ns = LOAD_M;
+        	    default: state_ns = INIT;
+        	endcase
     end
     
-    always @(posedge ctrl_clk or posedge ctrl_rst) begin
+    always @(posedge ctrl_clk) begin
         if (ctrl_rst) begin
             state_reg <= INIT;
             err_ff <= 1'b0;

@@ -28,8 +28,6 @@ vmap work work
 # -work <library_name>
 # Specifies a logical name or pathname of a library that is to be mapped to the
 # logical library work.
-
-
 vlog -work work ../vlog/rsa_core_ctrl.v \
 				../vlog/rsa_core_mult.v \
 				../vlog/rsa_core_mod.v \
