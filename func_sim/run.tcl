@@ -1,8 +1,4 @@
 #############################################################################
-## COMPANY NAME	: Engineers at Work
-## AUTHOR		: Alcides Silveira Costa
-## AUTHORS EMAIL: alcides@engineersatwork.com.br
-#############################################################################
 ## RELEASE HISTORY
 ## VERSION 		DATE 			AUTHOR			DESCRIPTION
 ## 1.0.0 		02-Nov-2009		Alcides			Creation
@@ -32,11 +28,13 @@ vmap work work
 # -work <library_name>
 # Specifies a logical name or pathname of a library that is to be mapped to the
 # logical library work.
-vcom -work work ../vhdl/rsa_core_ctrl.vhd \
-				../vhdl/rsa_core_mult.vhd \
-				../vhdl/rsa_core_mod.vhd \
-				../vhdl/rsa_core.vhd \
-				../vhdl/rsa_core_tb.vhd
+
+
+vlog -work work ../vlog/rsa_core_ctrl.v \
+				../vlog/rsa_core_mult.v \
+				../vlog/rsa_core_mod.v \
+				../vlog/rsa_core.v \
+				../vlog/rsa_core_tb.v
 
 # vsim loads a new design into the simulator
 # Specify the post-simulation database file name with the -debugDB=<db_pathname>
@@ -60,3 +58,8 @@ run 25ms
 
 # Open ModelSim internal editor and show results
 edit result.txt
+
+
+
+
+
