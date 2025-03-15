@@ -40,20 +40,24 @@ module rsa_core_mult #(
 	     	case(state_reg)
 		        INIT:
 		        	state_ns = (mult_start == START) ? ANALYZE : INIT;
+		        	
 		        ANALYZE:
 		        	state_ns = (b_reg[DATA_WIDTH-1]) ? SHIFT_ADD : SHIFT;
+		        	
 		        SHIFT_ADD: begin
 		          if (a_cnt != (DATA_WIDTH-1))
 		            state_ns = (b_reg[DATA_WIDTH-1]) ? SHIFT_ADD : SHIFT;
 		          else
 		            state_ns = DONE;
 		        end
+		        
 		        SHIFT: begin
 		          if (a_cnt != (DATA_WIDTH-1))
 		            state_ns = (b_reg[DATA_WIDTH-1]) ? SHIFT_ADD : SHIFT;
 		          else
 		            state_ns = DONE;
 		        end
+		        
 		        DONE:
 		        	state_ns = INIT;
 		        default:

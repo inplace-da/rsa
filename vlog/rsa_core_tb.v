@@ -63,7 +63,7 @@ module rsa_core_tb;
     // Loop reading three stimulus values per iteration (similar to the VHDL code)
     forever begin
       #(20000*CLK_PERIOD);
-      if ($fscanf(stim_file, "%h\n", stim_val) != 1)
+      if ($fscanf(stim_file, "%b\n", stim_val) != 1)
          disable stimulus_block;
       core_load = LOAD;
       core_din  = stim_val[7:0];
@@ -73,7 +73,7 @@ module rsa_core_tb;
 
       if ($feof(stim_file))
          disable stimulus_block;
-      if ($fscanf(stim_file, "%h\n", stim_val) != 1)
+      if ($fscanf(stim_file, "%b\n", stim_val) != 1)
          disable stimulus_block;
       core_load = LOAD;
       core_din  = stim_val[7:0];
@@ -83,7 +83,7 @@ module rsa_core_tb;
 
       if ($feof(stim_file))
          disable stimulus_block;
-      if ($fscanf(stim_file, "%h\n", stim_val) != 1)
+      if ($fscanf(stim_file, "%b\n", stim_val) != 1)
          disable stimulus_block;
       core_load = LOAD;
       core_din  = stim_val[7:0];
@@ -128,7 +128,7 @@ module rsa_core_tb;
     while (!$feof(checker_file)) begin
       wait (core_done == 1);
       test_num = test_num + 1;
-      fscanf_status = $fscanf(checker_file, "%h\n", expected_val);
+      fscanf_status = $fscanf(checker_file, "%b\n", expected_val);
       if (fscanf_status != 1)
          disable checker_block; // Exit the block if fscanf fails
       expected = expected_val[7:0];
