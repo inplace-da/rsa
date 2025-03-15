@@ -12,13 +12,13 @@ module rsa_core_ctrl #(
     input wire [DATA_WIDTH-1:0] ctrl_din,
     input wire ctrl_loadx,
     input wire [DATA_WIDTH-1:0] ctrl_dinx,
-    output reg ctrl_done,
-    output reg ctrl_err,
-    output reg [DATA_WIDTH-1:0] ctrl_c,
-    output reg ctrl_start,
-    output reg [DATA_WIDTH-1:0] ctrl_n,
-    output reg [DATA_WIDTH-1:0] ctrl_m,
-    output reg [DATA_WIDTH-1:0] ctrl_doutx
+    output ctrl_done,
+    output ctrl_err,
+    output [DATA_WIDTH-1:0] ctrl_c,
+    output ctrl_start,
+    output [DATA_WIDTH-1:0] ctrl_n,
+    output [DATA_WIDTH-1:0] ctrl_m,
+    output [DATA_WIDTH-1:0] ctrl_doutx
 );
 
     localparam ONE = 8'd1;
@@ -50,22 +50,21 @@ module rsa_core_ctrl #(
     reg start_ff;
     reg done_ff;
     
-    always @(*) begin
-        ctrl_c = c_reg;
-        ctrl_n = n_reg;
-        ctrl_m = m_reg;
-        ctrl_doutx = x_reg;
-        ctrl_done = done_ff;
-        ctrl_start = start_ff;
-        ctrl_err = err_ff;
-    end
+    assign ctrl_c = c_reg;
+    assign ctrl_n = n_reg;
+    assign ctrl_m = m_reg;
+    assign ctrl_doutx = x_reg;
+    
+    assign ctrl_done = done_ff;
+    assign ctrl_start = start_ff;
+    assign ctrl_err = err_ff;
     
     always @(ctrl_rst, ctrl_load, n_reg, e_reg, ctrl_loadx, state_reg) begin
     	if (ctrl_rst == RESET)
 			state_ns = INIT;
     	else
         	case (state_reg)
-        	    INIT: state_ns = LOAD_M;
+        	    INIT:	state_ns = LOAD_M;
         	    LOAD_M: state_ns = (ctrl_load == LOAD) ? WAIT_M : LOAD_M;
         	    WAIT_M: state_ns = (ctrl_load == LOAD) ? WAIT_M : LOAD_E;
         	    LOAD_E: state_ns = (ctrl_load == LOAD) ? WAIT_E : LOAD_E;
@@ -84,55 +83,70 @@ module rsa_core_ctrl #(
         	            state_ns = CASE2;
         	    end
         	    ERROR: state_ns = LOAD_M;
-        	    CASE0: state_ns = DONE;
-        	    CASE1: state_ns = DONE;
-        	    CASE2: state_ns = START;
-        	    START: state_ns = (e_reg == 0) ? DONE : START;
-        	    DONE: state_ns = LOAD_M;
+        	    CASE0: state_ns = ANALYZE;
+        	    
+        	    ANALYZE: begin
+        	        if (!ctrl_loadx)
+        	            state_ns = ANALYZE;
+        	        else
+        	        	if (e_reg == 0)
+        	            	state_ns = DONE;
+	        	        else
+        	            	state_ns = START;
+        	    end
+        	    DONE:	state_ns = LOAD_M;
+        	    CASE1: state_ns = ANALYZE;
+        	    CASE2: state_ns = ANALYZE;
+        	    START: state_ns = ANALYZE;
         	    default: state_ns = INIT;
         	endcase
     end
     
     always @(posedge ctrl_clk) begin
-        if (ctrl_rst) begin
-            state_reg <= INIT;
-            err_ff <= 1'b0;
-            start_ff <= 1'b0;
-            done_ff <= 1'b0;
-        end else begin
-            state_reg <= state_ns;
-            case (state_reg)
-                INIT: begin
-                    err_ff <= 1'b0;
-                    start_ff <= 1'b0;
-                    done_ff <= 1'b0;
-                end
-                LOAD_M: begin
-                    m_reg <= ctrl_din;
-                    x_reg <= ctrl_din;
-                    done_ff <= 1'b0;
-                end
-                LOAD_E: e_reg <= ctrl_din;
-                LOAD_N: n_reg <= ctrl_din;
-                ERROR: begin
-                    done_ff <= 1'b1;
-                    err_ff <= 1'b1;
-                    c_reg <= {DATA_WIDTH{1'b1}};
-                end
-                CASE0: x_reg <= ONE;
-                CASE1: x_reg <= m_reg;
-                CASE2: x_reg <= m_reg;
-                START: begin
-                    x_reg <= (e_reg[0]) ? (x_reg * m_reg) % n_reg : x_reg;
-                    m_reg <= (m_reg * m_reg) % n_reg;
-                    e_reg <= e_reg >> 1;
-                end
-                DONE: begin
-                    c_reg <= x_reg;
-                    done_ff <= 1'b1;
-                end
-            endcase
-        end
+		case (state_reg)
+        	INIT: begin
+            	err_ff <= 1'b0;
+                start_ff <= 1'b0;
+                done_ff <= 1'b0;
+        	end
+			LOAD_M: begin
+            	m_reg <= ctrl_din;
+                x_reg <= ctrl_din;
+                done_ff <= 1'b0;
+            end
+            LOAD_E:
+            	e_reg <= ctrl_din;
+			LOAD_N:
+				n_reg <= ctrl_din;
+            ERROR: begin
+            	done_ff <= 1'b1;
+                err_ff <= 1'b1;
+                c_reg <= {DATA_WIDTH{1'b1}};
+            end
+            CASE0: begin
+				start_ff	<= 1'b1;
+				m_reg		<= ONE;
+				x_reg		<= ONE;
+			end
+			ANALYZE: begin
+				x_reg		<= ctrl_dinx;
+				start_ff	<= 1'b0;
+			end	
+			DONE: begin
+				c_reg	<= x_reg;
+				done_ff		<= 1'b1;
+				err_ff		<= 1'b0;				
+			end	
+			CASE1: begin
+				x_reg		<= ONE;
+				start_ff	<= 1'b1;
+				e_reg		<= e_reg - 1;
+			end
+			START: begin
+				start_ff	<= 1'b1;
+				e_reg		<= e_reg - 1;
+            end
+		endcase
+        state_reg <= state_ns;
     end
-
 endmodule
