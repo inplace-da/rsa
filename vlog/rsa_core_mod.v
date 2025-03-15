@@ -32,11 +32,11 @@ module rsa_core_mod #(
              ERROR    = 3'b111;
 
   // Declaração dos sinais internos
-  reg [2:0] state_reg, state_ns;
-  reg [DATA_WIDTH:0] a_cnt;
-  reg [2*DATA_WIDTH-1:0] t_reg, n_reg;
-  reg [DATA_WIDTH-1:0] r_reg;
-  reg mod_done_ff, mod_err_ff;
+  reg 	[2:0] state_reg, state_ns;
+  reg	[DATA_WIDTH:0] a_cnt;
+  reg	[2*DATA_WIDTH-1:0] t_reg, n_reg;
+  reg	[DATA_WIDTH-1:0] r_reg;
+  reg	mod_done_ff, mod_err_ff;
 
   // Atribuição das saídas
   assign mod_done = mod_done_ff;
@@ -44,7 +44,7 @@ module rsa_core_mod #(
   assign mod_c    = r_reg;
 
   // Lógica combinacional para o cálculo do próximo estado (FSM)
-  always @(*) begin
+  always @(mod_rst, mod_start, t_reg, n_reg, a_cnt, state_reg) begin
     if (mod_rst == RESET)
       state_ns = INIT;
     else begin
@@ -93,8 +93,6 @@ module rsa_core_mod #(
   end
 
   // Bloco sequencial – o clock edge (posedge ou negedge) é escolhido via generate
-  generate
-    if (CLK_EDGE == 1) begin : pos_edge_block
       always @(posedge mod_clk) begin
         case (state_reg)
           INIT: begin
@@ -139,52 +137,4 @@ module rsa_core_mod #(
         endcase
         state_reg <= state_ns;
       end
-    end else begin : neg_edge_block
-      always @(negedge mod_clk) begin
-        case (state_reg)
-          INIT: begin
-            mod_done_ff <= 1'b0;
-            t_reg       <= mod_a;
-            n_reg[DATA_WIDTH-1:0] <= mod_b;
-            n_reg[2*DATA_WIDTH-1:DATA_WIDTH] <= {DATA_WIDTH{1'b0}};
-            a_cnt       <= {DATA_WIDTH+1{1'b0}};
-          end
-          CHECK: begin
-            // Nada a transferir nesta fase
-          end
-          PREPARE: begin
-            a_cnt <= a_cnt + 1'b1;
-            n_reg <= { n_reg[2*DATA_WIDTH-2:0], 1'b0 };
-          end
-          COMPARE: begin
-            // Nenhuma transferência nesta fase
-          end
-          SUBTRACT: begin
-            t_reg <= t_reg - n_reg;
-            n_reg <= { 1'b0, n_reg[2*DATA_WIDTH-1:1] };
-            a_cnt <= a_cnt - 1'b1;
-          end
-          SHIFT: begin
-            n_reg <= { 1'b0, n_reg[2*DATA_WIDTH-1:1] };
-            a_cnt <= a_cnt - 1'b1;
-          end
-          DONE: begin
-            r_reg       <= t_reg[DATA_WIDTH-1:0];
-            mod_done_ff <= 1'b1;
-            mod_err_ff  <= 1'b0;
-          end
-          ERROR: begin
-            mod_err_ff  <= 1'b1;
-            mod_done_ff <= 1'b1;
-            r_reg       <= {DATA_WIDTH{1'b1}};
-          end
-          default: begin
-            // Não faz nada
-          end
-        endcase
-        state_reg <= state_ns;
-      end
-    end
-  endgenerate
-
 endmodule
