@@ -32,7 +32,8 @@ module rsa_core #(
     rsa_core_mult #(
         .DATA_WIDTH(DATA_WIDTH),
         .CLK_EDGE(CLK_EDGE),
-        .RESET(RESET)
+        .RESET(RESET),
+        .START(1'b1)
     ) rsa_core_mult_blk (
         .mult_clk(core_clk),
         .mult_rst(core_rst),
@@ -46,7 +47,8 @@ module rsa_core #(
     rsa_core_mod #(
         .DATA_WIDTH(DATA_WIDTH),
         .CLK_EDGE(CLK_EDGE),
-        .RESET(RESET)
+        .RESET(RESET),
+        .START(1'b1)
     ) rsa_core_mod_blk (
         .mod_clk(core_clk),
         .mod_rst(core_rst),

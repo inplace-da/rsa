@@ -39,7 +39,8 @@ module rsa_core_ctrl #(
         CASE2   = 4'd12,
         START   = 4'd13;
     
-    reg [3:0]state_reg, state_ns;
+    reg 	[3:0]state_reg;
+    reg		[3:0]state_ns;
     
     reg [DATA_WIDTH-1:0] n_reg;
     reg [DATA_WIDTH-1:0] e_reg;
@@ -64,12 +65,18 @@ module rsa_core_ctrl #(
 			state_ns = INIT;
     	else
         	case (state_reg)
-        	    INIT:	state_ns = LOAD_M;
-        	    LOAD_M: state_ns = (ctrl_load == LOAD) ? WAIT_M : LOAD_M;
-        	    WAIT_M: state_ns = (ctrl_load == LOAD) ? WAIT_M : LOAD_E;
-        	    LOAD_E: state_ns = (ctrl_load == LOAD) ? WAIT_E : LOAD_E;
-        	    WAIT_E: state_ns = (ctrl_load == LOAD) ? WAIT_E : LOAD_N;
-        	    LOAD_N: state_ns = (ctrl_load == LOAD) ? WAIT_N : LOAD_N;
+        	    INIT:
+        	    	state_ns = LOAD_M;        	    	
+        	    LOAD_M:
+        	    	state_ns = (ctrl_load == LOAD) ? WAIT_M : LOAD_M;
+        	    WAIT_M:
+        	    	state_ns = (ctrl_load == LOAD) ? WAIT_M : LOAD_E;
+        	    LOAD_E:
+        	    	state_ns = (ctrl_load == LOAD) ? WAIT_E : LOAD_E;
+        	    WAIT_E:
+        	    	state_ns = (ctrl_load == LOAD) ? WAIT_E : LOAD_N;
+        	    LOAD_N:
+        	    	state_ns = (ctrl_load == LOAD) ? WAIT_N : LOAD_N;
         	    WAIT_N: begin
         	        if (ctrl_load == LOAD)
         	            state_ns = WAIT_N;
@@ -82,8 +89,10 @@ module rsa_core_ctrl #(
         	        else
         	            state_ns = CASE2;
         	    end
-        	    ERROR: state_ns = LOAD_M;
-        	    CASE0: state_ns = ANALYZE;
+        	    ERROR:
+        	    	state_ns = LOAD_M;
+        	    CASE0:
+        	    	state_ns = ANALYZE;
         	    
         	    ANALYZE: begin
         	        if (!ctrl_loadx)
@@ -94,34 +103,43 @@ module rsa_core_ctrl #(
 	        	        else
         	            	state_ns = START;
         	    end
-        	    DONE:	state_ns = LOAD_M;
-        	    CASE1: state_ns = ANALYZE;
-        	    CASE2: state_ns = ANALYZE;
-        	    START: state_ns = ANALYZE;
-        	    default: state_ns = INIT;
+        	    DONE:
+        	    	state_ns = LOAD_M;
+        	    CASE1:
+        	    	state_ns = ANALYZE;
+        	    CASE2:
+        	    	state_ns = ANALYZE;
+        	    START:
+        	    	state_ns = ANALYZE;
+        	    default:
+        	    	state_ns = INIT;
         	endcase
     end
     
     always @(posedge ctrl_clk) begin
 		case (state_reg)
         	INIT: begin
-            	err_ff <= 1'b0;
-                start_ff <= 1'b0;
-                done_ff <= 1'b0;
+            	err_ff		<= 1'b0;
+                start_ff	<= 1'b0;
+                done_ff		<= 1'b0;
         	end
 			LOAD_M: begin
-            	m_reg <= ctrl_din;
-                x_reg <= ctrl_din;
-                done_ff <= 1'b0;
+            	m_reg 		<= ctrl_din;
+                x_reg 		<= ctrl_din;
+                done_ff 	<= 1'b0;
+            end
+            WAIT_M:begin
             end
             LOAD_E:
-            	e_reg <= ctrl_din;
+            	e_reg 		<= ctrl_din;
+            WAIT_E:begin
+            end
 			LOAD_N:
-				n_reg <= ctrl_din;
+				n_reg 		<= ctrl_din;
             ERROR: begin
-            	done_ff <= 1'b1;
-                err_ff <= 1'b1;
-                c_reg <= {DATA_WIDTH{1'b1}};
+            	done_ff 	<= 1'b1;
+                err_ff 		<= 1'b1;
+                c_reg 		<= {DATA_WIDTH{1'b1}};
             end
             CASE0: begin
 				start_ff	<= 1'b1;
@@ -133,7 +151,7 @@ module rsa_core_ctrl #(
 				start_ff	<= 1'b0;
 			end	
 			DONE: begin
-				c_reg	<= x_reg;
+				c_reg		<= x_reg;
 				done_ff		<= 1'b1;
 				err_ff		<= 1'b0;				
 			end	
@@ -141,6 +159,10 @@ module rsa_core_ctrl #(
 				x_reg		<= ONE;
 				start_ff	<= 1'b1;
 				e_reg		<= e_reg - 1;
+			end
+			CASE2: begin
+				start_ff	<= 1'b1;
+				e_reg		<= e_reg - 2;
 			end
 			START: begin
 				start_ff	<= 1'b1;

@@ -119,8 +119,7 @@ module rsa_core_tb;
 
     // Write header lines to the result file.
     $fdisplay(result_file, "-------------------------------------------------------------------------------");
-    $fdisplay(result_file, "COMPANY NAME: Engineers at Work");
-    $fdisplay(result_file, "AUTHOR: Alcides Silveira Costa");
+    $fdisplay(result_file, "InPlace Design Automation");
     $fdisplay(result_file, "Simulation Results");
     $fdisplay(result_file, "-------------------------------------------------------------------------------");
     $fdisplay(result_file, "             Result       Expected");
@@ -148,7 +147,7 @@ module rsa_core_tb;
     $fdisplay(result_file, "End of Simulation");
     $fclose(checker_file);
     $fclose(result_file);
-    $finish;
+    $stop;
   end
 
 endmodule

@@ -15,7 +15,7 @@ module rsa_core_mod #(
     input                         mod_rst,
     input                         mod_start,
     input      [2*DATA_WIDTH-1:0] mod_a,
-    input      [DATA_WIDTH-1:0]    mod_b,
+    input      [DATA_WIDTH-1:0]   mod_b,
     output                        mod_done,
     output                        mod_err,
     output     [DATA_WIDTH-1:0]   mod_c
@@ -32,7 +32,8 @@ module rsa_core_mod #(
              ERROR    = 3'b111;
 
   // Declaração dos sinais internos
-  reg 	[2:0] state_reg, state_ns;
+  reg 	[2:0] state_reg;
+  reg	[2:0] state_ns;
   reg	[DATA_WIDTH:0] a_cnt;
   reg	[2*DATA_WIDTH-1:0] t_reg, n_reg;
   reg	[DATA_WIDTH-1:0] r_reg;
@@ -85,8 +86,10 @@ module rsa_core_mod #(
           else
             state_ns = DONE;
         end
-        DONE:  state_ns = INIT;
-        ERROR: state_ns = INIT;
+        DONE:
+        	state_ns = INIT;
+        ERROR:
+        	state_ns = INIT;
         default: state_ns = INIT;
       endcase
     end

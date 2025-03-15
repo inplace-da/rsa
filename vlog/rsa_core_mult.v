@@ -21,7 +21,8 @@ module rsa_core_mult #(
                    	SHIFT     = 3'd3,
                    	DONE      = 3'd4;
 
- 	reg [2:0] state_reg, state_ns;
+ 	reg [2:0] state_reg;
+ 	reg[2:0] state_ns;
   	reg [$clog2(DATA_WIDTH+1)-1:0] a_cnt;
   	reg [DATA_WIDTH-1:0] a_reg, b_reg;
  	reg [2*DATA_WIDTH-1:0] p_reg, c_reg;
@@ -39,7 +40,8 @@ module rsa_core_mult #(
 	     	case(state_reg)
 		        INIT:
 		        	state_ns = (mult_start == START) ? ANALYZE : INIT;
-		        ANALYZE: state_ns = (b_reg[DATA_WIDTH-1]) ? SHIFT_ADD : SHIFT;
+		        ANALYZE:
+		        	state_ns = (b_reg[DATA_WIDTH-1]) ? SHIFT_ADD : SHIFT;
 		        SHIFT_ADD: begin
 		          if (a_cnt != (DATA_WIDTH-1))
 		            state_ns = (b_reg[DATA_WIDTH-1]) ? SHIFT_ADD : SHIFT;
@@ -52,14 +54,15 @@ module rsa_core_mult #(
 		          else
 		            state_ns = DONE;
 		        end
-		        DONE: state_ns = INIT;
-		        default: state_ns = INIT;
+		        DONE:
+		        	state_ns = INIT;
+		        default:
+		        	state_ns = INIT;
 	    	endcase
 	    end
 	  end
 
 	always @(posedge mult_clk) begin
-		state_reg <= state_ns;
     	case(state_reg)
         	INIT: begin
 				p_reg   <= 0;
@@ -86,5 +89,6 @@ module rsa_core_mult #(
 				c_reg   <= p_reg;
 			end
 		endcase
+		state_reg <= state_ns;
 	end
 endmodule
